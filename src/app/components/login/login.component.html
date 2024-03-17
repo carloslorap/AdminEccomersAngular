@@ -1,0 +1,42 @@
+<div class="row" style="width: 100%;
+height: 100%;">
+    <div class="col-lg-7 mx-auto" style="display: flex;
+    align-items: center;">
+        <div class=" px-md-5 px-4">
+            <h3 class="modal-title mt-4 mb-0 text-center mb-5">Sign in</h3>
+            <p class="font-size-sm text-muted text-center">Sign in to your account using email and password provided during registration.</p>
+            <form class="needs-validation">
+              <div class="form-group">
+                <label for="signin-email">Email</label>
+                <input type="email" class="form-control" name="email" [(ngModel)]="user.email" placeholder="Your email address" required="">
+              </div>
+              <div class="form-group">
+                <label for="signin-password" class="form-label">Password</label>
+                <div class="cs-password-toggle input-group-overlay">
+                  <input type="password" class="form-control appended-form-control" name="password" [(ngModel)]="user.password" placeholder="Your password" required="">
+                  <div class="input-group-append-overlay">
+                    <label class="btn cs-password-toggle-btn input-group-text">
+                      <input type="checkbox" class="custom-control-input">
+                      <i class="cxi-eye cs-password-toggle-indicator"></i>
+                      <span class="sr-only">Show password</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center form-group">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="remember-me" checked="">
+                  <label for="remember-me" class="custom-control-label">Remember me</label>
+                </div>
+                <a href="#" class="font-size-sm text-decoration-none">Forgot password?</a>
+              </div>
+              <button type="submit" (click)="login()" class="btn btn-primary btn-block">Sign in</button>
+
+              <p class="font-size-sm pt-4 mb-0">
+                Don't have an account?
+                <a href="#" class="font-weight-bold text-decoration-none" data-view="#modal-signup-view">Sign up</a>
+              </p>
+            </form>
+          </div>
+    </div>
+</div>

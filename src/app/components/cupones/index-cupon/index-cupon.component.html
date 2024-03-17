@@ -1,0 +1,160 @@
+<app-sidebar></app-sidebar>
+
+<!-- Page title-->
+<div class="border-bottom pt-5 mt-2 mb-5">
+  <h1 class="mt-2 mt-md-4 mb-3 pt-5">Cupones</h1>
+  <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+    <p class="text-muted">Este módulo lista todos los cupones de la tienda.</p>
+    <p class="font-size-sm font-weight-medium pl-md-4">
+      <a [routerLink]="['/cupones/registro']"
+        >Registrar nuevo<i
+          class="cxi-angle-right font-size-base align-middle ml-1"
+        ></i
+      ></a>
+    </p>
+  </div>
+</div>
+
+<div class="card box-shadow-sm">
+  <div class="card-header">
+    <h5 style="margin-bottom: 0px">Filtro de clientes</h5>
+  </div>
+  <div class="card-header">
+
+    <div class="row">
+      <div class="col-6">
+        <div class="input-group">
+          <input class="form-control" type="text" placeholder="Buscar por codigo" name="filtro" [(ngModel)]="filtro"/>
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" (click)="filtrar()">Filtrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="thead-dark">
+          <tr>
+
+            <th>Codigo</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th>Limite</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="load_data">
+          <tr>
+            <td class="text-center" colspan="5">
+
+              <div
+                class="spinner-border"
+                style="width: 3rem; height: 3rem"
+                role="status"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody >
+
+        <tbody *ngIf="!load_data">
+          <tr
+            *ngFor="
+              let item of cupones
+                | slice
+                  : (page - 1) * pageSize
+                  : (page - 1) * pageSize + pageSize
+            "
+          >
+            <td>{{ item.codigo }}</td>
+            <td>{{ item.tipo }}</td>
+            <td>{{ item.valor }}</td>
+            <td>{{ item.limite }} restantes</td>
+            <td>
+              <div class="btn-group dropdown">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Opciones
+                </button>
+                <div class="dropdown-menu">
+                  <a
+                    [routerLink]="['/cupones', item._id]"
+                    class="dropdown-item"
+                    >Editar cupon</a
+                  >
+                  <a
+                    style="cursor: pointer"
+                    data-toggle="modal"
+                    [attr.data-target]="'#delete-' + item._id"
+                    class="dropdown-item"
+                    >Eliminar cupon</a
+                  >
+                </div>
+              </div>
+              <div
+                class="modal fade"
+                id="delete-{{ item._id }}"
+                tabindex="-1"
+                style="display: none"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Modal title</h4>
+                      <button
+                        class="btn-close"
+                        type="button"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <p class="fs-sm">Modal body text goes here.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        class="btn btn-secondary btn-sm"
+                        type="button"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                      <button
+                        class="btn btn-primary btn-sm"
+                        type="button"
+                        (click)="eliminar(item._id)"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination
+      [collectionSize]="cupones.length"
+      [pageSize]="pageSize"
+      [(page)]="page"
+      [maxSize]="10"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      class="w-100 mx-4"
+    ></ngb-pagination>
+  </div>
+</div>

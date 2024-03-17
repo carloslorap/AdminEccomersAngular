@@ -1,0 +1,200 @@
+<app-sidebar></app-sidebar>
+
+<!-- Page title-->
+<div class="border-bottom pt-5 mt-2 mb-5">
+  <h1 class="mt-2 mt-md-4 mb-3 pt-5">Descuento de producto</h1>
+  <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+    <p class="text-muted">
+      Este módulo lista todos los descuentos de la tienda.
+    </p>
+    <p class="font-size-sm font-weight-medium pl-md-4">
+      <a [routerLink]="['/descuentos/registro']"
+        >Registrar nuevo<i
+          class="cxi-angle-right font-size-base align-middle ml-1"
+        ></i
+      ></a>
+    </p>
+  </div>
+</div>
+
+<div class="card box-shadow-sm">
+  <div class="card-header">
+    <h5 style="margin-bottom: 0px">Filtro de Descuentos</h5>
+  </div>
+
+  <div class="card-header">
+    <div class="row">
+      <div class="col-6">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Titulo del descuento"
+            name="filtro"
+            [(ngModel)]="filtro"
+          />
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" (click)="filtrar()">Filtrar</button>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th>Titulo</th>
+            <th>Descuento</th>
+            <th>Vigencia</th>
+            <th>Estado</th>
+            <th>OP</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="load_data">
+          <tr>
+            <td class="text-center" colspan="7">
+              <!-- Custom size border spinner -->
+              <div
+                class="spinner-border"
+                style="width: 3rem; height: 3rem"
+                role="status"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <ng-container  *ngIf="!load_data">
+
+          <ng-container *ngIf="descuentos.length == 0">
+            <tr>
+              <td colspan="5" class="text-center">
+                <span class="text-muted">No se encontraron registros</span>
+              </td>
+            </tr>
+          </ng-container>
+
+          <ng-container *ngIf="descuentos.length >= 1">
+            <tbody>
+              <tr
+                *ngFor="
+                  let item of descuentos
+                    | slice
+                      : (page - 1) * pageSize
+                      : (page - 1) * pageSize + pageSize;
+                  let indice = index
+                "
+              >
+                <td>
+                  <h6 style="padding-bottom: 0;margin-bottom: 0;">
+                    <img
+                    style="width: 50px;"
+                      [src]="url + 'obtener_banner_descuento/' + item.banner"
+                      class="img-thumbnail rounded-0"
+                      alt=""
+                    />
+                    {{ item.titulo }}
+                  </h6>
+                </td>
+
+                <td>{{ item.descuento }}%</td>
+                <td>{{ item.fecha_inicio }} - {{ item.fecha_fin }}</td>
+                <td>
+                  <span class="badge badge-primary" *ngIf="item.estado == 'Proximamente'">{{item.estado}}</span>
+                  <span class="badge badge-danger" *ngIf="item.estado == 'Expirado'">{{item.estado}}</span>
+                  <span class="badge badge-success" *ngIf="item.estado == 'En progreso'">{{item.estado}}</span>
+                </td>
+                <td>
+                  <div class="btn-group dropdown">
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      Opciones
+                    </button>
+                    <div class="dropdown-menu">
+                      <a
+                        class="dropdown-item"
+                        [routerLink]="['/descuentos',item._id]"
+                        >Editar descuento</a
+                      >
+                      <a
+                        style="cursor: pointer"
+                        data-toggle="modal"
+                        [attr.data-target]="'#delete-' + item._id"
+                        class="dropdown-item"
+                        >Eliminar descuento</a
+                      >
+
+
+
+                    </div>
+                  </div>
+                  <div
+                    class="modal fade"
+                    id="delete-{{ item._id }}"
+                    tabindex="-1"
+                    style="display: none"
+                    aria-hidden="true"
+                  >
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Confirmacion de descuento</h4>
+                          <button
+                            class="btn-close"
+                            type="button"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <p class="fs-sm">{{item.titulo}} Desea eliminar el descuento</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button
+                            class="btn btn-secondary btn-sm"
+                            type="button"
+                            data-dismiss="modal"
+                          >
+                            Close
+                          </button>
+                          <button class="btn btn-primary btn-sm" type="button" (click)="eliminar(item._id)">
+                            Eliminar
+                          </button>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody></ng-container>
+
+
+
+        </ng-container>
+
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination
+      [collectionSize]="descuentos.length"
+      [pageSize]="pageSize"
+      [(page)]="page"
+      [maxSize]="10"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      class="w-100 mx-4"
+    ></ngb-pagination>
+  </div>
+</div>
